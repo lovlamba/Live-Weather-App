@@ -30,6 +30,7 @@ class LoopingPlayerUIView: UIView {
     init(frame: CGRect, videoName: String) {
         self.videoName = videoName
         super.init(frame: frame)
+        print(self.videoName)
         let fileUrl = Bundle.main.url(forResource: self.videoName, withExtension: "MOV")!
         let asset = AVAsset(url: fileUrl)
         let item = AVPlayerItem(asset: asset)
