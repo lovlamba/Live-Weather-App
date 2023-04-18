@@ -39,7 +39,7 @@ class WeatherViewModel{
         return data
     }
     
-    func getVideoName(iconName: String) -> String{
+    static func getVideoName(iconName: String) -> String{
         switch iconName {
           case "01d":
             return "day"

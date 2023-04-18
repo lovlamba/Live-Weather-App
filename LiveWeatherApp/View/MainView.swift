@@ -12,12 +12,13 @@ struct MainView: View {
     @StateObject var model = MainViewModel()
     @State var weather: Weather?
     @State var showAlert = false
+    @State var refreshed = false
     @State var alertMsg = ""
     
     var body: some View {
         VStack {
-            if let weather = weather {
-                WeatherMainView(weather: weather, location: model.location!).edgesIgnoringSafeArea(.top)
+            if weather != nil {
+                WeatherMainView(weather: $weather, refreshed: $refreshed, location: model.location!).edgesIgnoringSafeArea(.top)
             } else {
                 ProgressView()
                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
@@ -32,9 +33,21 @@ struct MainView: View {
         }
         .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
         .preferredColorScheme(.dark)
-        .onChange(of: model.location){ location in
+        .onAppear{
             self.getData()
         }
+        .onChange(of: refreshed){ isRefreshed in
+            if isRefreshed{
+                self.getData()
+            }
+        }
+        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .onEnded({ value in
+                if value.translation.height > 200 {
+                    self.refreshed = true
+                    self.getData()
+                }
+            }))
     }
     
     func getData(){

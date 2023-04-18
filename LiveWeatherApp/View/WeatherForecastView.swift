@@ -10,7 +10,7 @@ import SwiftUI
 struct WeatherForecastView: View {
     @Binding var forecastData : [WeatherDailyReport]?
     @Binding var dayWeather : WeatherDailyReport?
-    @Binding var weather: Weather
+    @Binding var weather: Weather?
     var body: some View {
         VStack{
             HStack{
@@ -21,7 +21,7 @@ struct WeatherForecastView: View {
                                 self.weather = dayWeather!.hourlyReports[index]
                             }){
                                 Text(dayWeather!.hourlyReports[index].time)
-                            }.padding().background(self.weather.time == dayWeather!.hourlyReports[index].time ? Color.gray : Color.white).cornerRadius(8).foregroundColor(self.weather.time == dayWeather!.hourlyReports[index].time ? Color.white : Color.black)
+                            }.padding().background(self.weather!.time == dayWeather!.hourlyReports[index].time ? Color.gray : Color.white).cornerRadius(8).foregroundColor(self.weather!.time == dayWeather!.hourlyReports[index].time ? Color.white : Color.black)
                         }
                     }
                 }
