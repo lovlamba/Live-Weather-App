@@ -14,6 +14,7 @@ struct MainView: View {
     @State var showAlert = false
     @State var refreshed = false
     @State var alertMsg = ""
+    @State var tempLocation: CLLocation?
     
     var body: some View {
         VStack {
@@ -33,8 +34,10 @@ struct MainView: View {
         }
         .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
         .preferredColorScheme(.dark)
-        .onAppear{
-            self.getData()
+        .onChange(of: model.location ){ location in 
+            if tempLocation == nil && model.location != nil{
+                self.getData()
+            }
         }
         .onChange(of: refreshed){ isRefreshed in
             if isRefreshed{
@@ -53,6 +56,7 @@ struct MainView: View {
     func getData(){
         Task{
             if let location = model.location{
+                self.tempLocation = location
                 if let weather = await model.getCurrentWeather(location: location){
                     self.weather = weather
                 }
