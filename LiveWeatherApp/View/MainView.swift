@@ -76,18 +76,10 @@ struct MainView: View {
     func getData(){
         Task{
             if let location = model.location{
-                if let weather = await model.getCurrentWeather(location: location){
-                    self.weather = weather
-                }
-                else{
-                    print("unable to get weather")
-                }
-                if let forecastData = await model.getWeatherForecastData(location: location){
-                    self.forecastData = forecastData
+                self.weather = await model.getCurrentWeather(location: location)
+                self.forecastData = await model.getWeatherForecastData(location: location)
+                if let forecastData = forecastData{
                     self.dayWeather = forecastData[0]
-                }
-                else{
-                    print("Unable to fetch forecast data")
                 }
             }
         }

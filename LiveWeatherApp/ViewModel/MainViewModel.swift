@@ -30,6 +30,7 @@ class MainViewModel: NSObject, ObservableObject{
         }catch{
             print(error)
         }
+        print("Unable to get weather")
         return nil
     }
     
@@ -41,6 +42,7 @@ class MainViewModel: NSObject, ObservableObject{
         catch{
             print(error)
         }
+        print("Unable to get forecast data")
         return nil
     }
     
