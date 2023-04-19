@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct WeatherDetailView: View {
-    var weather: Weather
+    var weather: Weather?
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -26,7 +26,7 @@ struct WeatherDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Min temp")
                             .font(.caption)
-                        Text((Double(weather.tempMin) ?? 0.0).roundDouble() + "°")
+                        Text(self.weather == nil ? "-" : (Double(weather!.tempMin) ?? 0.0).roundDouble() + "°")
                             .bold()
                             .font(.title)
                     }
@@ -42,7 +42,7 @@ struct WeatherDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Max temp")
                             .font(.caption)
-                        Text((Double(weather.tempMax) ?? 0.0).roundDouble() + "°")
+                        Text(self.weather == nil ? "-" : (Double(weather!.tempMax) ?? 0.0).roundDouble() + "°")
                             .bold()
                             .font(.title)
                     }
@@ -59,7 +59,7 @@ struct WeatherDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Wind speed")
                             .font(.caption)
-                        Text((Double(weather.windSpeed) ?? 0.0).roundDouble() + " m/s")
+                        Text(self.weather == nil ? "-" : (Double(weather!.windSpeed) ?? 0.0).roundDouble() + " m/s")
                             .bold()
                             .font(.title)
                     }
@@ -75,7 +75,7 @@ struct WeatherDetailView: View {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Humidity")
                             .font(.caption)
-                        Text((Double(weather.humidity) ?? 0.0).roundDouble() + "%")
+                        Text(self.weather == nil ? "-" : (Double(weather!.humidity) ?? 0.0).roundDouble() + "%")
                             .bold()
                             .font(.title)
                     }

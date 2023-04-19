@@ -10,64 +10,85 @@ import CoreLocation
 
 struct MainView: View {
     @StateObject var model = MainViewModel()
+    @State var forecastData : [WeatherDailyReport]?
+    @State var dayWeather: WeatherDailyReport?
     @State var weather: Weather?
-    @State var showAlert = false
     @State var refreshed = false
-    @State var alertMsg = ""
-    @State var tempLocation: CLLocation?
     
     var body: some View {
         VStack {
-            if weather != nil {
-                WeatherMainView(weather: $weather, refreshed: $refreshed, location: model.location!).edgesIgnoringSafeArea(.top)
+            if model.location != nil {
+                ZStack{
+                    VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top)
+                    VStack {
+                        VStack{
+                            Text(weather?.place ?? "")
+                                .bold()
+                                .font(.title)
+                            Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
+                                .fontWeight(.light)
+                        }.padding(.top, 20.0)
+                        Spacer()
+                        HStack {
+                            VStack(spacing: 20) {
+                                AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(weather?.icon ?? "")@2x.png")).frame(maxWidth: 30, maxHeight: 30)
+                                Text(weather?.description ?? "")
+                            }
+                            .frame(width: 100, alignment: .center)
+                            Spacer()
+                            Text(self.weather == nil ? "-" : (Double(weather!.temp) ?? 0.0).roundDouble() + "°")
+                                .font(.system(size: 100))
+                                .fontWeight(.bold)
+                                .padding()
+                        }.padding(.bottom, -20.0)
+                        WeatherForecastView(forecastData: self.$forecastData, dayWeather: self.$dayWeather, weather: self.$weather)
+                        WeatherDetailView(weather: self.weather)
+                        
+                    }
+                }
+                .edgesIgnoringSafeArea(.bottom)
+                .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                    .onEnded({ value in
+                        if value.translation.height > 200 {
+                            self.refreshed = true
+                            self.getData()
+                        }
+                    }))
+                .onAppear{
+                    self.getData()
+                }
+                .onChange(of: refreshed){ isRefreshed in
+                    if isRefreshed{
+                        self.getData()
+                        self.refreshed = false
+                    }
+                }
             } else {
-                ProgressView()
-                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                Text("Unable to access location. Try Again Later.").onAppear{
+                    self.model.locationManager.requestWhenInUseAuthorization()
+                }
             }
-        }
-        .alert(isPresented: $showAlert) {
-            Alert(title: Text(self.alertMsg), message: Text("Please check your network connection"), dismissButton: .default(Text("Try Again"), action: {
-                self.showAlert = false
-                self.getData()
-            }))
         }
         .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
         .preferredColorScheme(.dark)
-        .onChange(of: model.location ){ location in 
-            if tempLocation == nil && model.location != nil{
-                self.getData()
-            }
-        }
-        .onChange(of: refreshed){ isRefreshed in
-            if isRefreshed{
-                self.getData()
-            }
-        }
-        .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
-            .onEnded({ value in
-                if value.translation.height > 200 {
-                    self.refreshed = true
-                    self.getData()
-                }
-            }))
     }
     
     func getData(){
         Task{
             if let location = model.location{
-                self.tempLocation = location
                 if let weather = await model.getCurrentWeather(location: location){
                     self.weather = weather
                 }
                 else{
-                    alertMsg = "Could not fetch the current weather."
-                    showAlert = true
+                    print("unable to get weather")
                 }
-            }
-            else{
-                print("Could not get your location.")
-                showAlert = true
+                if let forecastData = await model.getWeatherForecastData(location: location){
+                    self.forecastData = forecastData
+                    self.dayWeather = forecastData[0]
+                }
+                else{
+                    print("Unable to fetch forecast data")
+                }
             }
         }
     }

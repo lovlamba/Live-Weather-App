@@ -13,11 +13,11 @@ import AVFoundation
 struct VideoPlayerView: UIViewRepresentable {
     @Binding var weather: Weather?
     func updateUIView(_ uiView: LoopingPlayerUIView, context: Context) {
-        uiView.videoName = WeatherViewModel.getVideoName(iconName: weather!.icon)
+        uiView.videoName = MainViewModel.getVideoName(iconName: weather?.icon ?? "")
         uiView.play()
     }
     func makeUIView(context: Context) -> LoopingPlayerUIView{
-        return LoopingPlayerUIView(frame: .zero, videoName: WeatherViewModel.getVideoName(iconName: weather!.icon))
+        return LoopingPlayerUIView(frame: .zero, videoName: MainViewModel.getVideoName(iconName: weather?.icon ?? ""))
     }
 }
 

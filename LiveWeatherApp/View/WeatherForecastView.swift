@@ -16,12 +16,14 @@ struct WeatherForecastView: View {
             HStack{
                 ScrollView(.horizontal){
                     HStack{
-                        ForEach(0..<dayWeather!.hourlyReports.count, id: \.self) { index in
-                            Button(action: {
-                                self.weather = dayWeather!.hourlyReports[index]
-                            }){
-                                Text(dayWeather!.hourlyReports[index].time)
-                            }.padding().background(self.weather!.time == dayWeather!.hourlyReports[index].time ? Color.gray : Color.white).cornerRadius(8).foregroundColor(self.weather!.time == dayWeather!.hourlyReports[index].time ? Color.white : Color.black)
+                        if let dayWeather = dayWeather, let weather = weather{
+                            ForEach(0..<dayWeather.hourlyReports.count, id: \.self) { index in
+                                Button(action: {
+                                    self.weather = dayWeather.hourlyReports[index]
+                                }){
+                                    Text(dayWeather.hourlyReports[index].time)
+                                }.padding().background(weather.time == dayWeather.hourlyReports[index].time ? Color.gray : Color.white).cornerRadius(8).foregroundColor(weather.time == dayWeather.hourlyReports[index].time ? Color.white : Color.black)
+                            }
                         }
                     }
                 }
@@ -29,13 +31,15 @@ struct WeatherForecastView: View {
             HStack{
                 ScrollView(.horizontal){
                     HStack{
-                        ForEach(0..<forecastData!.count, id: \.self) { index in
-                            Button(action: {
-                                self.dayWeather = forecastData![index]
-                                self.weather = forecastData![index].hourlyReports[0]
-                            }){
-                                Text(forecastData![index].date)
-                            }.padding().background(self.dayWeather!.date == forecastData![index].date ? Color.gray : Color.white).foregroundColor(self.dayWeather!.date == forecastData![index].date ? Color.white : Color.black)
+                        if let forecastData = forecastData, let dayWeather = dayWeather{
+                            ForEach(0..<forecastData.count, id: \.self) { index in
+                                Button(action: {
+                                    self.dayWeather = forecastData[index]
+                                    self.weather = forecastData[index].hourlyReports[0]
+                                }){
+                                    Text(forecastData[index].date)
+                                }.padding().background(dayWeather.date == forecastData[index].date ? Color.gray : Color.white).foregroundColor(dayWeather.date == forecastData[index].date ? Color.white : Color.black)
+                            }
                         }
                     }
                 }

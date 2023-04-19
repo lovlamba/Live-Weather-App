@@ -16,10 +16,8 @@
 		9E9649DA29DC5878009385E3 /* WeatherDailyReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649D729DC5878009385E3 /* WeatherDailyReport.swift */; };
 		9E9649DE29DC588A009385E3 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649DB29DC588A009385E3 /* VideoPlayerView.swift */; };
 		9E9649DF29DC588A009385E3 /* WeatherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649DC29DC588A009385E3 /* WeatherDetailView.swift */; };
-		9E9649E029DC588A009385E3 /* WeatherMainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649DD29DC588A009385E3 /* WeatherMainView.swift */; };
 		9E9649EA29DC591C009385E3 /* WeatherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649E729DC591C009385E3 /* WeatherService.swift */; };
 		9E9649ED29DC5982009385E3 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649EC29DC5982009385E3 /* Extensions.swift */; };
-		9E9649F729DC5BEA009385E3 /* WeatherViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649F629DC5BEA009385E3 /* WeatherViewModel.swift */; };
 		9E9649F929DC5FEA009385E3 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649F829DC5FEA009385E3 /* MainViewModel.swift */; };
 		9E9649FB29DEE804009385E3 /* WeatherForecastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9649FA29DEE804009385E3 /* WeatherForecastView.swift */; };
 		9E9649FE29ED5AB6009385E3 /* cloudyDay.MOV in Resources */ = {isa = PBXBuildFile; fileRef = 9E9649FC29ED5AB5009385E3 /* cloudyDay.MOV */; };
@@ -41,10 +39,8 @@
 		9E9649D729DC5878009385E3 /* WeatherDailyReport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherDailyReport.swift; sourceTree = "<group>"; };
 		9E9649DB29DC588A009385E3 /* VideoPlayerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VideoPlayerView.swift; sourceTree = "<group>"; };
 		9E9649DC29DC588A009385E3 /* WeatherDetailView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherDetailView.swift; sourceTree = "<group>"; };
-		9E9649DD29DC588A009385E3 /* WeatherMainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherMainView.swift; sourceTree = "<group>"; };
 		9E9649E729DC591C009385E3 /* WeatherService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WeatherService.swift; sourceTree = "<group>"; };
 		9E9649EC29DC5982009385E3 /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
-		9E9649F629DC5BEA009385E3 /* WeatherViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherViewModel.swift; sourceTree = "<group>"; };
 		9E9649F829DC5FEA009385E3 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		9E9649FA29DEE804009385E3 /* WeatherForecastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherForecastView.swift; sourceTree = "<group>"; };
 		9E9649FC29ED5AB5009385E3 /* cloudyDay.MOV */ = {isa = PBXFileReference; lastKnownFileType = video.quicktime; path = cloudyDay.MOV; sourceTree = "<group>"; };
@@ -120,7 +116,6 @@
 			isa = PBXGroup;
 			children = (
 				9E9649C629DC5807009385E3 /* MainView.swift */,
-				9E9649DD29DC588A009385E3 /* WeatherMainView.swift */,
 				9E9649FA29DEE804009385E3 /* WeatherForecastView.swift */,
 				9E9649DC29DC588A009385E3 /* WeatherDetailView.swift */,
 				9E9649DB29DC588A009385E3 /* VideoPlayerView.swift */,
@@ -132,7 +127,6 @@
 			isa = PBXGroup;
 			children = (
 				9E9649F829DC5FEA009385E3 /* MainViewModel.swift */,
-				9E9649F629DC5BEA009385E3 /* WeatherViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -244,9 +238,7 @@
 				9E9649DF29DC588A009385E3 /* WeatherDetailView.swift in Sources */,
 				9E9649F929DC5FEA009385E3 /* MainViewModel.swift in Sources */,
 				9E9649D929DC5878009385E3 /* ForecastResponse.swift in Sources */,
-				9E9649F729DC5BEA009385E3 /* WeatherViewModel.swift in Sources */,
 				9E9649DE29DC588A009385E3 /* VideoPlayerView.swift in Sources */,
-				9E9649E029DC588A009385E3 /* WeatherMainView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
