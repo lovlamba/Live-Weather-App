@@ -28,7 +28,7 @@ class MainViewModel: NSObject, ObservableObject{
             let weather = Weather(place: weatherResponse.name, time: Date().getTimeString(), weatherId: String(weatherResponse.weather[0].id), weatherType: weatherResponse.weather[0].main, description: weatherResponse.weather[0].description, icon: weatherResponse.weather[0].icon, temp: String(weatherResponse.main.temp), feelsLike: String(weatherResponse.main.feels_like), tempMin: String(weatherResponse.main.temp_min), tempMax: String(weatherResponse.main.temp_max), pressure: String(weatherResponse.main.pressure), humidity: String(weatherResponse.main.humidity), windSpeed: String(weatherResponse.wind.speed), windDeg: String(weatherResponse.wind.deg))
             return weather
         }catch{
-            print(error)
+            print(error.localizedDescription)
         }
         print("Unable to get weather")
         return nil
@@ -40,7 +40,7 @@ class MainViewModel: NSObject, ObservableObject{
             return self.getWeatherData(weatherApiResponse: report)
         }
         catch{
-            print(error)
+            print(error.localizedDescription)
         }
         print("Unable to get forecast data")
         return nil
