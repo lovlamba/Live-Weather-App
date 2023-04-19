@@ -18,7 +18,7 @@ struct WeatherMainView: View {
     
     var body: some View {
         ZStack{
-            VideoPlayerView(videoName: WeatherViewModel.getVideoName(iconName: weather!.icon))
+            VideoPlayerView(weather: $weather)
             VStack {
                 VStack{
                     VStack{

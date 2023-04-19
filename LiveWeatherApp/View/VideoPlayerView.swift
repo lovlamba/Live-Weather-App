@@ -11,11 +11,13 @@ import AVKit
 import AVFoundation
 
 struct VideoPlayerView: UIViewRepresentable {
-    var videoName: String
-    func updateUIView(_ uiView: UIView, context: UIViewRepresentableContext<VideoPlayerView>) {
+    @Binding var weather: Weather?
+    func updateUIView(_ uiView: LoopingPlayerUIView, context: Context) {
+        uiView.videoName = WeatherViewModel.getVideoName(iconName: weather!.icon)
+        uiView.play()
     }
-    func makeUIView(context: Context) -> UIView {
-        return LoopingPlayerUIView(frame: .zero, videoName: self.videoName)
+    func makeUIView(context: Context) -> LoopingPlayerUIView{
+        return LoopingPlayerUIView(frame: .zero, videoName: WeatherViewModel.getVideoName(iconName: weather!.icon))
     }
 }
 
@@ -30,7 +32,10 @@ class LoopingPlayerUIView: UIView {
     init(frame: CGRect, videoName: String) {
         self.videoName = videoName
         super.init(frame: frame)
-        print(self.videoName)
+        play()
+        
+    }
+    func play(){
         let fileUrl = Bundle.main.url(forResource: self.videoName, withExtension: "MOV")!
         let asset = AVAsset(url: fileUrl)
         let item = AVPlayerItem(asset: asset)
