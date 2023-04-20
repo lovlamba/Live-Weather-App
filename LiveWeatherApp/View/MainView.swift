@@ -14,17 +14,59 @@ struct MainView: View {
     @State var dayWeather: WeatherDailyReport?
     @State var weather: Weather?
     @State var refreshed = false
+    @State var showTextfield = false
+    @State var placeName = ""
+    @State var searchLocation: CLLocation?
     
     var body: some View {
         VStack {
-            if model.location != nil {
-                ZStack{
-                    VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top)
+            if refreshed{
+                ProgressView().frame(width: 20.0,height: 20.0)
+            }
+            ZStack{
+                VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top)
+                if model.location != nil {
                     VStack {
                         VStack{
-                            Text(weather?.place ?? "")
-                                .bold()
-                                .font(.title)
+                            if !showTextfield{
+                                HStack{
+                                    Text(weather?.place ?? "")
+                                        .bold()
+                                        .font(.title)
+                                    Button(action: {
+                                        self.showTextfield = true
+                                    }){
+                                        Image(systemName: "magnifyingglass").resizable()
+                                            .frame(width: 20.0, height: 20.0).foregroundColor(.white)
+                                    }
+                                }
+                            }
+                            else{
+                                HStack {
+                                    TextField("Search Place...", text: self.$placeName)
+                                        .frame(width: 150.0)
+                                    Button(action: {
+                                        model.getCoordinateFrom(address: placeName) { coordinate, error in
+                                            guard let coordinate = coordinate, error == nil else {
+                                                print(error?.localizedDescription as Any)
+                                                return
+                                            }
+                                            DispatchQueue.main.async {
+                                                print("Location:", coordinate)
+                                            }
+                                        }
+                                        self.showTextfield = false
+                                        placeName = ""
+                                    }){
+                                        Image(systemName: "magnifyingglass").resizable()
+                                            .frame(width: 20.0, height: 20.0).foregroundColor(.white)
+                                    }
+                                }
+                                .padding(8.0)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 5.0).stroke(.white, lineWidth: 2.0)
+                                )
+                            }
                             Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
                                 .fontWeight(.light)
                         }.padding(.top, 20.0)
@@ -45,42 +87,36 @@ struct MainView: View {
                         WeatherDetailView(weather: self.weather)
                         
                     }
-                }
-                .edgesIgnoringSafeArea(.bottom)
-                .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                    .onEnded({ value in
-                        if value.translation.height > 200 {
-                            self.refreshed = true
-                            self.getData()
-                        }
-                    }))
-                .onAppear{
-                    self.getData()
-                }
-                .onChange(of: refreshed){ isRefreshed in
-                    if isRefreshed{
-                        self.getData()
-                        self.refreshed = false
+                    .onAppear{
+                        self.refreshed = true
+                        self.getData(isSearched: false)
                     }
                 }
-            } else {
-                Text("Unable to access location. Try Again Later.").onAppear{
-                    self.model.locationManager.requestWhenInUseAuthorization()
-                }
             }
+            .edgesIgnoringSafeArea(.bottom)
+            .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                .onEnded({ value in
+                    if value.translation.height > 200 {
+                        self.refreshed = true
+                        self.getData(isSearched: false)
+                        self.showTextfield = false
+                        placeName = ""
+                    }
+                }))
         }
         .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
         .preferredColorScheme(.dark)
     }
     
-    func getData(){
+    func getData(isSearched: Bool){
         Task{
-            if let location = model.location{
+            if let location = isSearched ? self.searchLocation : model.location{
                 self.weather = await model.getCurrentWeather(location: location)
                 self.forecastData = await model.getWeatherForecastData(location: location)
                 if let forecastData = forecastData{
                     self.dayWeather = forecastData[0]
                 }
+                self.refreshed = false
             }
         }
     }
