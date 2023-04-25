@@ -24,7 +24,15 @@ struct MainView: View {
                 ProgressView().frame(width: 20.0,height: 20.0)
             }
             ZStack{
-                VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top)
+                VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top).gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
+                    .onEnded({ value in
+                        if value.translation.height > 200 {
+                            self.refreshed = true
+                            self.getData(isSearched: false)
+                            self.showTextfield = false
+                            placeName = ""
+                        }
+                    }))
                 if model.location != nil {
                     VStack {
                         VStack{
@@ -51,9 +59,9 @@ struct MainView: View {
                                                 print(error?.localizedDescription as Any)
                                                 return
                                             }
-                                            DispatchQueue.main.async {
-                                                print("Location:", coordinate)
-                                            }
+                                            self.searchLocation = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+                                            self.refreshed = true
+                                            self.getData(isSearched: true)
                                         }
                                         self.showTextfield = false
                                         placeName = ""
@@ -94,15 +102,6 @@ struct MainView: View {
                 }
             }
             .edgesIgnoringSafeArea(.bottom)
-            .gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                .onEnded({ value in
-                    if value.translation.height > 200 {
-                        self.refreshed = true
-                        self.getData(isSearched: false)
-                        self.showTextfield = false
-                        placeName = ""
-                    }
-                }))
         }
         .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
         .preferredColorScheme(.dark)
