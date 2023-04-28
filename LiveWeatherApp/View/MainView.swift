@@ -20,23 +20,25 @@ struct MainView: View {
     
     var body: some View {
         VStack {
-            if refreshed{
-                ProgressView().frame(width: 20.0,height: 20.0)
-            }
             ZStack{
-                VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top).gesture(DragGesture(minimumDistance: 0, coordinateSpace: .local)
-                    .onEnded({ value in
-                        if value.translation.height > 200 {
-                            self.refreshed = true
-                            self.getData(isSearched: false)
-                            self.showTextfield = false
-                            placeName = ""
-                        }
-                    }))
+                VideoPlayerView(weather: $weather).edgesIgnoringSafeArea(.top)
                 if model.location != nil {
                     VStack {
-                        VStack{
+                        ScrollView{
+                            PullToRefresh(coordinateSpaceName: "pullToRefresh") {
+                                self.refreshed = true
+                                self.getData(isSearched: false)
+                                self.showTextfield = false
+                                placeName = ""
+                            }
                             if !showTextfield{
+                                if refreshed{
+                                    ProgressView().frame(width: 30.0,height: 30.0).overlay(
+                                        RoundedRectangle(cornerRadius: 3.0).stroke(.black, lineWidth: 2.0)
+                                    ).background{Color.black}
+                                }else{
+                                    Text("Swipe down to refresh ⬇️")
+                                }
                                 HStack{
                                     Text(weather?.place ?? "")
                                         .bold()
@@ -76,24 +78,22 @@ struct MainView: View {
                                 )
                             }
                             Text("Today, \(Date().formatted(.dateTime.month().day().hour().minute()))")
-                                .fontWeight(.light)
-                        }.padding(.top, 20.0)
-                        Spacer()
-                        HStack {
-                            VStack(spacing: 20) {
-                                AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(weather?.icon ?? "")@2x.png")).frame(maxWidth: 30, maxHeight: 30)
-                                Text(weather?.description ?? "")
-                            }
-                            .frame(width: 100, alignment: .center)
-                            Spacer()
-                            Text(self.weather == nil ? "-" : (Double(weather!.temp) ?? 0.0).roundDouble() + "°")
-                                .font(.system(size: 100))
-                                .fontWeight(.bold)
-                                .padding()
-                        }.padding(.bottom, -20.0)
-                        WeatherForecastView(forecastData: self.$forecastData, dayWeather: self.$dayWeather, weather: self.$weather)
+                                .fontWeight(.light).padding(.bottom, 50.0)
+                            HStack {
+                                VStack(spacing: 20) {
+                                    AsyncImage(url: URL(string: "https://openweathermap.org/img/wn/\(weather?.icon ?? "")@2x.png")).frame(maxWidth: 30, maxHeight: 30)
+                                    Text(weather?.description ?? "")
+                                }
+                                .frame(width: 100, alignment: .center)
+                                Spacer()
+                                Text(self.weather == nil ? "-" : (Double(weather!.temp) ?? 0.0).roundDouble() + "°")
+                                    .font(.system(size: 100))
+                                    .fontWeight(.bold)
+                                    .padding()
+                            }.padding(.bottom, 70.0)
+                            WeatherForecastView(forecastData: self.$forecastData, dayWeather: self.$dayWeather, weather: self.$weather)
+                        }.coordinateSpace(name: "pullToRefresh")
                         WeatherDetailView(weather: self.weather)
-                        
                     }
                     .onAppear{
                         self.refreshed = true
@@ -103,8 +103,6 @@ struct MainView: View {
             }
             .edgesIgnoringSafeArea(.bottom)
         }
-        .background(Color(hue: 0.656, saturation: 0.787, brightness: 0.354))
-        .preferredColorScheme(.dark)
     }
     
     func getData(isSearched: Bool){
@@ -124,5 +122,36 @@ struct MainView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()
+    }
+}
+
+
+struct PullToRefresh: View {
+    
+    var coordinateSpaceName: String
+    var onRefresh: ()->Void
+    
+    @State var needRefresh: Bool = false
+    
+    var body: some View {
+        GeometryReader { geo in
+            if (geo.frame(in: .named(coordinateSpaceName)).midY > 50) {
+                Spacer()
+                    .onAppear {
+                        needRefresh = true
+                    }
+            } else if (geo.frame(in: .named(coordinateSpaceName)).maxY < 10) {
+                Spacer()
+                    .onAppear {
+                        if needRefresh {
+                            needRefresh = false
+                            onRefresh()
+                        }
+                    }
+            }
+            HStack {
+                Spacer()
+            }
+        }.padding(.top, -50)
     }
 }
